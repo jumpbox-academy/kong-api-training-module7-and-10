@@ -1,0 +1,47 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+livedebugging {
+  enabled = true
+}
+
+prometheus.scrape "kong" {
+  targets    = [{ __address__ = "kong:8100", __metrics_path__ = "/metrics", }]
+  scrape_interval = "15s"
+  forward_to = [ prometheus.remote_write.mimir.receiver ]
+}
+
+prometheus.remote_write "mimir" {
+  endpoint {
+    url = "http://mimir:9009/api/v1/push"
+  }
+}
+
+discovery.docker "local" {
+  host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "kong_only" {
+  targets = discovery.docker.local.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/kong"
+    action        = "keep"
+  }
+}
+
+loki.source.docker "kong_logs" {
+  host    = "unix:///var/run/docker.sock"
+  targets = discovery.relabel.kong_only.output
+  labels  = { "app" = "kong", "job" = "kong" }
+  forward_to = [loki.write.loki.receiver]
+}
+
+loki.write "loki" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
