@@ -14,6 +14,7 @@ Make sure you have installed:
 - Docker
 - Docker Compose
 - Git
+- jq
 
 ---
 
@@ -23,6 +24,57 @@ docker --version
 
 docker compose version
 ```
+
+---
+### jq Installation Guide
+
+jq is a lightweight and flexible command-line JSON processor.
+
+This guide explains how to install jq on Windows and macOS.
+
+### 📦 Windows Installation
+**Option 1**: Install **using Chocolatey** (Recommended)
+
+If you already have Chocolatey installed, run:
+
+```
+choco install jq -y
+```
+
+**Option 2**: Install Chocolatey First
+
+If Chocolatey is **not installed**:
+
+1. Open PowerShell as Administrator
+2. Run the following command:
+```
+Set-ExecutionPolicy Bypass -Scope Process -Force; `
+[System.Net.ServicePointManager]::SecurityProtocol = `
+[System.Net.ServicePointManager]::SecurityProtocol -bor 3072; `
+iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
+Reference: https://chocolatey.org/install
+
+After Chocolatey installation is complete, install jq:
+```
+choco install jq -y
+```
+
+### 📦 macOS Installation
+Install using Homebrew
+```
+brew install jq
+```
+If Homebrew is not installed, visit: https://brew.sh/
+
+✅ Verify Installation
+After installation, verify t
+hat jq is installed correctly:
+```
+jq --version
+```
+
+---
 
 ## ✅ Getting Started
 ### 1.Create a Docker Network
